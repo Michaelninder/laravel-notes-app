@@ -28,31 +28,16 @@
         </div>
 
         <div class="form-group">
-            <label for="notable_type">
+            <label>
                 <i data-lucide="folder" style="width:13px;height:13px;vertical-align:middle;"></i>
                 Save to
             </label>
-            <select name="notable_type" id="notable_type" required>
-                <option value="{{ \App\Models\User::class }}"
-                        data-id="{{ auth()->id() }}"
-                        {{ old('notable_type', $notableType) === \App\Models\User::class ? 'selected' : '' }}>
-                    📁 Personal Notes
-                </option>
-                @foreach ($notebooks as $notebook)
-                    <option value="{{ \App\Models\NoteBook::class }}"
-                            data-id="{{ $notebook->id }}"
-                            {{ old('notable_type', $notableType) === \App\Models\NoteBook::class &&
-                               (int) old('notable_id', $notableId) === $notebook->id ? 'selected' : '' }}>
-                        {{ $notebook->name }}
-                    </option>
-                @endforeach
-            </select>
-
-            <input type="hidden"
-                   name="notable_id"
-                   id="notable_id"
-                   value="{{ old('notable_id', $notableId ?? auth()->id()) }}"
-                   data-user-id="{{ auth()->id() }}">
+            <x-notebook-select
+                :notableType="old('notable_type', $notableType)"
+                :notableId="old('notable_id', $notableId ?? auth()->id())"
+                :notebooks="$notebooks"
+                :userId="auth()->id()"
+            />
         </div>
 
         <div class="form-group" style="margin-bottom:0;">

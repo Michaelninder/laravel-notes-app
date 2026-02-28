@@ -13,10 +13,11 @@
 </head>
 <body>
     @auth
+    {{-- ── Top header ────────────────────────────────────────── --}}
     <header>
         <nav>
             {{-- Brand --}}
-            <div>
+            <div class="nav-brand">
                 <a href="{{ route('dashboard') }}">
                     <i data-lucide="notebook-pen" class="brand-icon" style="width:18px;height:18px;"></i>
                     <strong>{{ config('app.name', 'Laravel Notes') }}</strong>
@@ -24,36 +25,38 @@
             </div>
 
             {{-- Center links --}}
-            <div>
+            <div class="nav-top-links">
                 <a href="{{ route('dashboard') }}" class="nav-link">
                     <i data-lucide="layout-dashboard" style="width:15px;height:15px;"></i>
-                    Dashboard
+                    <span class="nav-label">Dashboard</span>
                 </a>
                 <a href="{{ route('notebooks.index') }}" class="nav-link">
                     <i data-lucide="book-open" style="width:15px;height:15px;"></i>
-                    Notebooks
+                    <span class="nav-label">Notebooks</span>
                 </a>
                 <a href="{{ route('notes.index') }}" class="nav-link">
                     <i data-lucide="file-text" style="width:15px;height:15px;"></i>
-                    Notes
+                    <span class="nav-label">Notes</span>
                 </a>
                 <a href="{{ route('activity.index') }}" class="nav-link">
                     <i data-lucide="activity" style="width:15px;height:15px;"></i>
-                    Activity
+                    <span class="nav-label">Activity</span>
                 </a>
                 <a href="{{ route('trash.index') }}" class="nav-link">
                     <i data-lucide="trash-2" style="width:15px;height:15px;"></i>
-                    Trash
+                    <span class="nav-label">Trash</span>
                 </a>
             </div>
 
             {{-- Right side --}}
-            <div>
+            <div class="nav-right">
                 <span class="nav-user">
                     <i data-lucide="circle-user" style="width:15px;height:15px;"></i>
                     {{ auth()->user()->name }}
                 </span>
-                <a href="{{ route('profile.edit') }}" class="nav-icon-btn" data-tooltip="Profile">
+                <a href="{{ route('profile.edit') }}"
+                   class="nav-icon-btn nav-profile-btn"
+                   data-tooltip="Profile settings">
                     <i data-lucide="settings" style="width:16px;height:16px;"></i>
                 </a>
                 <form method="POST" action="{{ route('logout') }}" class="logout-form">
@@ -62,13 +65,39 @@
                         <i data-lucide="log-out" style="width:15px;height:15px;"></i>
                     </button>
                 </form>
-                {{-- Hamburger (mobile) --}}
-                <button class="nav-hamburger" aria-label="Toggle menu">
-                    <i data-lucide="menu" style="width:20px;height:20px;"></i>
-                </button>
+                {{-- Hamburger: only visible on mobile --}}
+                <!--button class="nav-hamburger" aria-label="Toggle menu">
+                    <span class="nav-ham-icon">
+                        <i data-lucide="menu" style="width:20px;height:20px;"></i>
+                    </span>
+                </button-->
             </div>
         </nav>
     </header>
+
+    {{-- ── Mobile bottom nav ─────────────────────────────────── --}}
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+        <a href="{{ route('dashboard') }}" class="mobile-nav-link">
+            <i data-lucide="layout-dashboard" style="width:22px;height:22px;"></i>
+            <span class="mn-label">Dashboard</span>
+        </a>
+        <a href="{{ route('notebooks.index') }}" class="mobile-nav-link">
+            <i data-lucide="book-open" style="width:22px;height:22px;"></i>
+            <span class="mn-label">Notebooks</span>
+        </a>
+        <a href="{{ route('notes.index') }}" class="mobile-nav-link">
+            <i data-lucide="file-text" style="width:22px;height:22px;"></i>
+            <span class="mn-label">Notes</span>
+        </a>
+        <a href="{{ route('activity.index') }}" class="mobile-nav-link">
+            <i data-lucide="activity" style="width:22px;height:22px;"></i>
+            <span class="mn-label">Activity</span>
+        </a>
+        <a href="{{ route('trash.index') }}" class="mobile-nav-link">
+            <i data-lucide="trash-2" style="width:22px;height:22px;"></i>
+            <span class="mn-label">Trash</span>
+        </a>
+    </nav>
     @endauth
 
     <main>
@@ -114,7 +143,7 @@
         @yield('content')
     </main>
 
-    {{-- App JS (after DOM) --}}
+    {{-- App JS --}}
     <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
