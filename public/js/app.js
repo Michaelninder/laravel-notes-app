@@ -126,3 +126,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // (optional convenience — noop if not used)
 
 });
+
+// ── Note create/edit: notable_type → notable_id sync ───────
+document.addEventListener('DOMContentLoaded', () => {
+  const notableTypeSelect = document.getElementById('notable_type');
+  const notableIdInput    = document.getElementById('notable_id');
+
+  if (notableTypeSelect && notableIdInput) {
+    notableTypeSelect.addEventListener('change', function () {
+      const selected = this.selectedOptions[0];
+      notableIdInput.value = selected.dataset.id || notableIdInput.dataset.userId || '';
+    });
+  }
+});
