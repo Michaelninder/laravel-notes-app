@@ -139,3 +139,78 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
+
+// ── Icon Picker ────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-icon-picker]').forEach(wrap => {
+    const hiddenInput   = wrap.querySelector('input[type="hidden"]');
+    const searchInput   = wrap.querySelector('.icon-picker-search');
+    const grid          = wrap.querySelector('.icon-picker-grid');
+    const selectedWrap  = wrap.querySelector('.icon-picker-selected');
+    const selectedIcon  = wrap.querySelector('.icon-picker-selected-preview i');
+    const selectedName  = wrap.querySelector('.icon-picker-selected-name');
+    const clearBtn      = wrap.querySelector('.icon-picker-clear');
+    const countEl       = wrap.querySelector('.ip-count');
+
+    if (!grid || !hiddenInput) return;
+
+    const allBtns = () => Array.from(grid.querySelectorAll('.icon-btn'));
+
+    function setSelected(slug) {
+      hiddenInput.value = slug || '';
+      if (slug) {
+        selectedWrap.style.display = 'flex';
+        selectedName.textContent = slug;
+        if (selectedIcon) {
+          selectedIcon.setAttribute('data-lucide', slug);
+          lucide.createIcons({ nodes: [selectedIcon] });
+        }
+        allBtns().forEach(b => b.classList.toggle('selected', b.dataset.icon === slug));
+      } else {
+        selectedWrap.style.display = 'none';
+        allBtns().forEach(b => b.classList.remove('selected'));
+      }
+    }
+
+    // Init
+    setSelected(hiddenInput.value || '');
+
+    // Click icon
+    grid.addEventListener('click', e => {
+      const btn = e.target.closest('.icon-btn');
+      if (!btn) return;
+      const slug = btn.dataset.icon;
+      setSelected(hiddenInput.value === slug ? '' : slug);
+    });
+
+    // Clear
+    clearBtn?.addEventListener('click', () => setSelected(''));
+
+    // Search filter
+    searchInput?.addEventListener('input', () => {
+      const q = searchInput.value.toLowerCase().trim();
+      let visible = 0;
+      allBtns().forEach(btn => {
+        const match = !q || btn.dataset.icon.includes(q);
+        btn.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      if (countEl) countEl.textContent = `${visible} icons`;
+      // no-results placeholder
+      let noRes = grid.querySelector('.icon-picker-no-results');
+      if (visible === 0) {
+        if (!noRes) {
+          noRes = document.createElement('div');
+          noRes.className = 'icon-picker-no-results';
+          noRes.textContent = 'No icons match "' + q + '"';
+          grid.appendChild(noRes);
+        } else {
+          noRes.textContent = 'No icons match "' + q + '"';
+          noRes.style.display = '';
+        }
+      } else if (noRes) {
+        noRes.style.display = 'none';
+      }
+    });
+  });
+});

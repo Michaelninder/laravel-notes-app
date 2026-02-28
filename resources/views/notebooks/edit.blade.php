@@ -1,27 +1,45 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Edit Notebook</h1>
+
+<div class="page-header">
+    <h1>
+        <i data-lucide="book-open" style="width:20px;height:20px;color:var(--accent);vertical-align:middle;margin-right:.35rem;"></i>
+        Edit Notebook
+    </h1>
+    <a href="{{ route('notebooks.show', $notebook) }}" class="btn btn-ghost btn-sm">
+        <i data-lucide="arrow-left" style="width:13px;height:13px;"></i>
+        Cancel
+    </a>
+</div>
 
 <form method="POST" action="{{ route('notebooks.update', $notebook) }}">
     @csrf
     @method('PUT')
 
-    <label for="name">Notebook Name</label>
-    <input type="text" 
-           id="name" 
-           name="name" 
-           value="{{ old('name', $notebook->name) }}" 
-           required>
+    <div class="form-card">
+        <div class="form-group">
+            <label for="name">Notebook Name</label>
+            <input type="text"
+                   id="name"
+                   name="name"
+                   value="{{ old('name', $notebook->name) }}"
+                   required
+                   autofocus>
+        </div>
 
-    <label for="icon">Icon (Lucide icon name, optional)</label>
-    <input type="text" 
-           id="icon" 
-           name="icon" 
-           value="{{ old('icon', $notebook->icon) }}"
-           placeholder="e.g., book-open">
+        <hr class="divider">
 
-    <button type="submit">Update Notebook</button>
-    <a href="{{ route('notebooks.show', $notebook) }}">Cancel</a>
+        <x-icon-picker name="icon" :selected="old('icon', $notebook->icon ?? '')" label="Notebook Icon" />
+    </div>
+
+    <div class="form-actions" style="margin-top:1.25rem;">
+        <button type="submit" class="btn btn-primary">
+            <i data-lucide="save" style="width:15px;height:15px;"></i>
+            Save Changes
+        </button>
+        <a href="{{ route('notebooks.show', $notebook) }}" class="btn btn-ghost">Cancel</a>
+    </div>
 </form>
+
 @endsection
