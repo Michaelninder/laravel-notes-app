@@ -15,8 +15,6 @@ return new class extends Migration
             $table->longText('content')->nullable();
             $table->timestamps();
             $table->softDeletes();
-
-            $table->index(['notable_type', 'notable_id']);
         });
     }
 

@@ -7,9 +7,12 @@ use App\Models\NoteBook;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class NoteController extends Controller
 {
+    use AuthorizesRequests;
+    
     public function index()
     {
         $notes = Note::where(function ($query) {

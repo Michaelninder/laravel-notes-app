@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\NoteBook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class NoteBookController extends Controller
 {
+    use AuthorizesRequests;
+
     public function index()
     {
         $notebooks = Auth::user()->noteBooks()
