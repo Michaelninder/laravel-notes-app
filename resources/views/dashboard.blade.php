@@ -1,78 +1,177 @@
 @extends('layouts.app')
 
 @section('content')
-<h1>Dashboard</h1>
 
-<div>
-    <h2>Quick Stats</h2>
-    <ul>
-        <li>Total Notebooks: {{ auth()->user()->noteBooks()->count() }}</li>
-        <li>Total Notes: {{ $totalNotes }}</li>
-        <li>Recent Activity: {{ $recentActivities->count() }} events</li>
-    </ul>
+<div class="page-header">
+    <h1>Dashboard</h1>
+    <a href="{{ route('notes.create', [
+        'notable_type' => \App\Models\User::class,
+        'notable_id'   => auth()->id()
+    ]) }}" class="btn btn-primary">
+        <i data-lucide="plus" style="width:15px;height:15px;"></i>
+        New Note
+    </a>
 </div>
 
-<div>
-    <h2>Recent Notes</h2>
-    @if ($recentNotes->isEmpty())
-        <p>No notes yet. <a href="{{ route('notes.create', [
-            'notable_type' => \App\Models\User::class,
-            'notable_id' => auth()->id()
-        ]) }}">Create your first note</a></p>
-    @else
-        <ul>
-            @foreach ($recentNotes as $note)
-                <li>
-                    <a href="{{ route('notes.show', $note) }}">
-                        {{ $note->title ?: 'Untitled Note' }}
+{{-- Quick Stats --}}
+<div class="stats-grid">
+    <div class="stat-item">
+        <div class="stat-icon">
+            <i data-lucide="book-open" style="width:18px;height:18px;"></i>
+        </div>
+        <div>
+            <div class="stat-number">{{ auth()->user()->noteBooks()->count() }}</div>
+            <div class="stat-label">Notebooks</div>
+        </div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-icon">
+            <i data-lucide="file-text" style="width:18px;height:18px;"></i>
+        </div>
+        <div>
+            <div class="stat-number">{{ $totalNotes }}</div>
+            <div class="stat-label">Total Notes</div>
+        </div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-icon">
+            <i data-lucide="activity" style="width:18px;height:18px;"></i>
+        </div>
+        <div>
+            <div class="stat-number">{{ $recentActivities->count() }}</div>
+            <div class="stat-label">Recent Events</div>
+        </div>
+    </div>
+</div>
+
+{{-- Main grid --}}
+<div class="dashboard-grid">
+
+    {{-- Recent Notes --}}
+    <div class="card">
+        <div class="card-header">
+            <h2>
+                <i data-lucide="file-text" style="width:16px;height:16px;color:var(--ink-3);vertical-align:middle;margin-right:.3rem;"></i>
+                Recent Notes
+            </h2>
+            <a href="{{ route('notes.index') }}" class="btn btn-ghost btn-sm">
+                View all
+                <i data-lucide="arrow-right" style="width:13px;height:13px;"></i>
+            </a>
+        </div>
+
+        @if ($recentNotes->isEmpty())
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i data-lucide="file-plus-2" style="width:22px;height:22px;"></i>
+                </div>
+                <p>No notes yet.</p>
+                <a href="{{ route('notes.create', [
+                    'notable_type' => \App\Models\User::class,
+                    'notable_id'   => auth()->id()
+                ]) }}" class="btn btn-primary btn-sm">
+                    <i data-lucide="plus" style="width:13px;height:13px;"></i>
+                    Create first note
+                </a>
+            </div>
+        @else
+            <div class="item-list">
+                @foreach ($recentNotes as $note)
+                    <a href="{{ route('notes.show', $note) }}" class="item-row">
+                        <div class="item-icon">
+                            <i data-lucide="file-text" style="width:15px;height:15px;"></i>
+                        </div>
+                        <div class="item-content">
+                            <span class="item-title">{{ $note->title ?: 'Untitled Note' }}</span>
+                            <div class="item-meta">{{ $note->updated_at->diffForHumans() }}</div>
+                        </div>
                     </a>
-                    <small>{{ $note->updated_at->diffForHumans() }}</small>
-                </li>
-            @endforeach
-        </ul>
-        <a href="{{ route('notes.index') }}">View all notes</a>
-    @endif
-</div>
+                @endforeach
+            </div>
+        @endif
+    </div>
 
-<div>
-    <h2>Recent Notebooks</h2>
-    @if ($recentNotebooks->isEmpty())
-        <p>No notebooks yet. 
-           <a href="{{ route('notebooks.create') }}">Create your first notebook</a>
-        </p>
-    @else
-        <ul>
-            @foreach ($recentNotebooks as $notebook)
-                <li>
-                    <a href="{{ route('notebooks.show', $notebook) }}">
-                        @if ($notebook->icon)
-                            <span>{{ $notebook->icon }}</span>
-                        @endif
-                        {{ $notebook->name }}
+    {{-- Recent Notebooks --}}
+    <div class="card">
+        <div class="card-header">
+            <h2>
+                <i data-lucide="book-open" style="width:16px;height:16px;color:var(--ink-3);vertical-align:middle;margin-right:.3rem;"></i>
+                Recent Notebooks
+            </h2>
+            <a href="{{ route('notebooks.index') }}" class="btn btn-ghost btn-sm">
+                View all
+                <i data-lucide="arrow-right" style="width:13px;height:13px;"></i>
+            </a>
+        </div>
+
+        @if ($recentNotebooks->isEmpty())
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i data-lucide="book-plus" style="width:22px;height:22px;"></i>
+                </div>
+                <p>No notebooks yet.</p>
+                <a href="{{ route('notebooks.create') }}" class="btn btn-primary btn-sm">
+                    <i data-lucide="plus" style="width:13px;height:13px;"></i>
+                    Create notebook
+                </a>
+            </div>
+        @else
+            <div class="item-list">
+                @foreach ($recentNotebooks as $notebook)
+                    <a href="{{ route('notebooks.show', $notebook) }}" class="item-row">
+                        <div class="item-icon notebook-icon">
+                            @if ($notebook->icon)
+                                <i data-lucide="{{ $notebook->icon }}" style="width:15px;height:15px;"></i>
+                            @else
+                                <i data-lucide="book-open" style="width:15px;height:15px;"></i>
+                            @endif
+                        </div>
+                        <div class="item-content">
+                            <span class="item-title">{{ $notebook->name }}</span>
+                            <div class="item-meta">{{ $notebook->notes_count }} {{ Str::plural('note', $notebook->notes_count) }}</div>
+                        </div>
                     </a>
-                    <small>({{ $notebook->notes_count }} notes)</small>
-                </li>
-            @endforeach
-        </ul>
-        <a href="{{ route('notebooks.index') }}">View all notebooks</a>
-    @endif
-</div>
+                @endforeach
+            </div>
+        @endif
+    </div>
 
-<div>
-    <h2>Recent Activity</h2>
-    @if ($recentActivities->isEmpty())
-        <p>No recent activity.</p>
-    @else
-        <ul>
+    {{-- Recent Activity (full width) --}}
+    <div class="card card-full">
+        <div class="card-header">
+            <h2>
+                <i data-lucide="activity" style="width:16px;height:16px;color:var(--ink-3);vertical-align:middle;margin-right:.3rem;"></i>
+                Recent Activity
+            </h2>
+            <a href="{{ route('activity.index') }}" class="btn btn-ghost btn-sm">
+                View all
+                <i data-lucide="arrow-right" style="width:13px;height:13px;"></i>
+            </a>
+        </div>
+
+        @if ($recentActivities->isEmpty())
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i data-lucide="clock" style="width:22px;height:22px;"></i>
+                </div>
+                <p>No recent activity.</p>
+            </div>
+        @else
             @foreach ($recentActivities as $activity)
-                <li>
-                    <strong>{{ $activity->description }}</strong>
-                    on {{ $activity->subject_type }}
-                    <small>{{ $activity->created_at->diffForHumans() }}</small>
-                </li>
+                <div class="activity-item">
+                    <div class="activity-dot"></div>
+                    <div>
+                        <div class="activity-text">
+                            <strong>{{ $activity->description }}</strong>
+                            <span class="text-muted"> · {{ class_basename($activity->subject_type) }}</span>
+                        </div>
+                        <div class="activity-time">{{ $activity->created_at->diffForHumans() }}</div>
+                    </div>
+                </div>
             @endforeach
-        </ul>
-        <a href="{{ route('activity.index') }}">View all activity</a>
-    @endif
+        @endif
+    </div>
+
 </div>
+
 @endsection

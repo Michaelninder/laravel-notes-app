@@ -13,7 +13,7 @@
         @foreach ($notebooks as $notebook)
             <li>
                 {{ $notebook->name }}
-                <small>Deleted {{ $notebook->deleted_at->diffForHumans() }}</small>
+                <small>Deleted {{ $notebook->deleted_at?->diffForHumans() ?? 'Unknown date' }}</small>
                 
                 <form method="POST" 
                       action="{{ route('trash.restore', ['type' => 'notebook', 'id' => $notebook->id]) }}" 
@@ -45,7 +45,7 @@
         @foreach ($notes as $note)
             <li>
                 {{ $note->title ?: 'Untitled Note' }}
-                <small>Deleted {{ $note->deleted_at->diffForHumans() }}</small>
+                <small>Deleted {{ $note->deleted_at?->diffForHumans() ?? 'Unknown date' }}</small>
                 
                 <form method="POST" 
                       action="{{ route('trash.restore', ['type' => 'note', 'id' => $note->id]) }}" 
