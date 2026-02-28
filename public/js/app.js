@@ -220,3 +220,15 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 });
+
+// ── Password visibility toggle ─────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.pw-toggle').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const input = btn.closest('.input-wrap').querySelector('input');
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      lucideInto(btn, isHidden ? 'eye-off' : 'eye', '16px');
+    });
+  });
+});
